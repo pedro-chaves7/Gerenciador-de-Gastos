@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Organizador de Gastos 💰</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>💰 Organizador de Gastos</h1>
+
+    <form id="form-gasto">
+      <input type="text" id="descricao" placeholder="Descrição do gasto" required>
+      
+      <select id="categoria">
+        <option value="">Selecione uma categoria</option>
+        <option value="Alimentação">Alimentação</option>
+        <option value="Transporte">Transporte</option>
+        <option value="Lazer">Lazer</option>
+        <option value="Saúde">Saúde</option>
+        <option value="Outros">Outros</option>
+      </select>
+
+      <input type="text" id="categoria-outros" placeholder="Digite a categoria Personalizada" style="display:none;">
+
+      <input type="number" id="valor" placeholder="Valor (R$)" required min="0" step="0.01">
+      <input type="date" id="data" required>
+
+      <button type="submit">Adicionar</button>
+    </form>
+
+    <!-- 👇 FILTROS POR MÊS E ANO -->
+    <div id="filtros">
+      <label>Mês:</label>
+      <select id="mes-filtro">
+        <option value="">Todos</option>
+        <option value="01">Janeiro</option>
+        <option value="02">Fevereiro</option>
+        <option value="03">Março</option>
+        <option value="04">Abril</option>
+        <option value="05">Maio</option>
+        <option value="06">Junho</option>
+        <option value="07">Julho</option>
+        <option value="08">Agosto</option>
+        <option value="09">Setembro</option>
+        <option value="10">Outubro</option>
+        <option value="11">Novembro</option>
+        <option value="12">Dezembro</option>
+      </select>
+
+      <label>Ano:</label>
+      <input type="number" id="ano-filtro" placeholder="2025" min="2000" max="2100" style="width: 80px;">
+
+      <button id="filtrar">Filtrar</button>
+    </div>
+
+    <h2>Gastos Registrados</h2>
+    <ul id="lista-gastos"></ul>
+
+    <div id="total-container">
+      <strong>Total: R$ <span id="total">0.00</span></strong>
+    </div>
+
+    <h2>Distribuição dos Gastos</h2>
+    <canvas id="graficoGastos" width="400" height="400"></canvas>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
+  
+</body>
+</html>
