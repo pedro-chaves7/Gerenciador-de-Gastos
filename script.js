@@ -1,26 +1,88 @@
+// Elementos
 const form = document.getElementById("form-gasto");
 const lista = document.getElementById("lista-gastos");
 const totalSpan = document.getElementById("total");
 const categoriaSelect = document.getElementById("categoria");
 const categoriaOutros = document.getElementById("categoria-outros");
-
 const mesFiltro = document.getElementById("mes-filtro");
 const anoFiltro = document.getElementById("ano-filtro");
 const botaoFiltrar = document.getElementById("filtrar");
+const entradaInput = document.getElementById("entrada");
+const origemInput = document.getElementById("origem");
+const editarEntradaBtn = document.getElementById("editar-entrada");
+const salvarEntradaBtn = document.getElementById("salvar-entrada");
+const mensagemNegativo = document.getElementById("mensagem-negativo");
 
 let gastos = JSON.parse(localStorage.getItem("gastos")) || [];
+let entrada = 0;
+let origem = "";
 let grafico;
 
-// Mostrar campo "Outros"
+// -------------------------
+// Carregar entrada e origem do localStorage
+// -------------------------
+window.addEventListener("load", () => {
+  const entradaSalva = localStorage.getItem("entrada");
+  const origemSalva = localStorage.getItem("origem");
+
+  if (entradaSalva) {
+    entrada = Number(entradaSalva);
+    entradaInput.value = entrada;
+    entradaInput.disabled = true;
+  }
+
+  if (origemSalva) {
+    origem = origemSalva;
+    origemInput.value = origem;
+    origemInput.disabled = true;
+  }
+
+  atualizarLista();
+});
+
+// -------------------------
+// Entrada fixa e edição
+// -------------------------
+editarEntradaBtn.addEventListener("click", () => {
+  entradaInput.disabled = false;
+  origemInput.disabled = false;
+  salvarEntradaBtn.style.display = "inline";
+  editarEntradaBtn.style.display = "none";
+});
+
+salvarEntradaBtn.addEventListener("click", () => {
+  entrada = Number(entradaInput.value) || 0;
+  origem = origemInput.value || "";
+
+  // Salvar no localStorage
+  localStorage.setItem("entrada", entrada);
+  localStorage.setItem("origem", origem);
+
+  entradaInput.disabled = true;
+  origemInput.disabled = true;
+  salvarEntradaBtn.style.display = "none";
+  editarEntradaBtn.style.display = "inline";
+
+  atualizarLista();
+});
+
+// -------------------------
+// Categoria "Outros"
+// -------------------------
 categoriaSelect.addEventListener("change", () => {
   categoriaOutros.style.display = categoriaSelect.value === "Outros" ? "block" : "none";
 });
 
-// Botão de filtro
+// -------------------------
+// Botão Filtrar
+// -------------------------
 botaoFiltrar.addEventListener("click", () => {
   atualizarLista();
 });
 
+// -------------------------
+// Atualizar lista e saldo
+// -------------------------
 function atualizarLista() {
   lista.innerHTML = "";
   let total = 0;
@@ -38,6 +100,8 @@ function atualizarLista() {
   gastosFiltrados.forEach((gasto, index) => {
     const li = document.createElement("li");
     li.id = "gasto-item";
+    li.title = gasto.descricao; // Tooltip
+
     li.innerHTML = `
       <span>${gasto.data} - ${gasto.categoria}: R$ ${gasto.valor.toFixed(2)}</span>
       <button class="apagar" onclick="removerGasto(${index})">🗑️</button>
@@ -48,10 +112,21 @@ function atualizarLista() {
 
   totalSpan.textContent = total.toFixed(2);
 
+  // Mensagem saldo negativo
+  const saldo = entrada - total;
+  if (saldo < 0) {
+    mensagemNegativo.textContent = `⚠️ Saldo negativo: R$ ${Math.abs(saldo).toFixed(2)}`;
+  } else {
+    mensagemNegativo.textContent = "";
+  }
+
   atualizarGrafico(gastosFiltrados);
   localStorage.setItem("gastos", JSON.stringify(gastos));
 }
 
+// -------------------------
+// Adicionar gasto
+// -------------------------
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -71,11 +146,17 @@ form.addEventListener("submit", (e) => {
   categoriaOutros.style.display = "none";
 });
 
+// -------------------------
+// Remover gasto
+// -------------------------
 function removerGasto(index) {
   gastos.splice(index, 1);
   atualizarLista();
 }
 
+// -------------------------
+// Gráfico
+// -------------------------
 function atualizarGrafico(filtroGastos = gastos) {
   const categorias = {};
   filtroGastos.forEach(gasto => {
@@ -84,7 +165,7 @@ function atualizarGrafico(filtroGastos = gastos) {
 
   const ctx = document.getElementById("graficoGastos").getContext("2d");
 
-  if (grafico) grafico.destroy(); // evita gráfico duplicado
+  if (grafico) grafico.destroy();
 
   grafico = new Chart(ctx, {
     type: 'pie',
@@ -108,5 +189,7 @@ function atualizarGrafico(filtroGastos = gastos) {
   });
 }
 
+// -------------------------
 // Inicializa lista e gráfico
+// -------------------------
 atualizarLista();

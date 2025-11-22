@@ -1,18 +1,33 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Organizador de Gastos 💰</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <div class="container">
     <h1>💰 Organizador de Gastos</h1>
 
+    <!-- Entrada Fixa + Origem -->
+    <div class="entrada-container">
+      <label for="entrada">Entrada (R$):</label>
+      <input type="number" id="entrada" placeholder="Digite sua entrada" disabled>
+
+      <label for="origem">Origem do dinheiro:</label>
+      <input type="text" id="origem" placeholder="Ex: Salário" disabled>
+
+      <button id="editar-entrada">Editar</button>
+      <button id="salvar-entrada" style="display:none">Salvar</button>
+    </div>
+
+    <!-- Formulário de Gastos -->
     <form id="form-gasto">
       <input type="text" id="descricao" placeholder="Descrição do gasto" required>
-      
+
       <select id="categoria">
         <option value="">Selecione uma categoria</option>
         <option value="Alimentação">Alimentação</option>
@@ -30,7 +45,7 @@
       <button type="submit">Adicionar</button>
     </form>
 
-    <!-- 👇 FILTROS POR MÊS E ANO -->
+    <!-- FILTROS POR MÊS E ANO -->
     <div id="filtros">
       <label>Mês:</label>
       <select id="mes-filtro">
@@ -55,20 +70,22 @@
       <button id="filtrar">Filtrar</button>
     </div>
 
+    <!-- Lista de Gastos -->
     <h2>Gastos Registrados</h2>
     <ul id="lista-gastos"></ul>
 
+    <!-- Total + Mensagem Negativa -->
     <div id="total-container">
       <strong>Total: R$ <span id="total">0.00</span></strong>
     </div>
+    <div id="mensagem-negativo" style="color:red; font-weight:bold; margin-top:5px;"></div>
 
+    <!-- Gráfico -->
     <h2>Distribuição dos Gastos</h2>
     <canvas id="graficoGastos" width="400" height="400"></canvas>
-
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
-  
 </body>
 </html>
